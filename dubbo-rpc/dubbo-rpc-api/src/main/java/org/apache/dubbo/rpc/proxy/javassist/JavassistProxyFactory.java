@@ -32,10 +32,10 @@ public class JavassistProxyFactory extends AbstractProxyFactory {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Invoker<T> invoker, Class<?>[] interfaces) {
-        // getProxy() 内部其实动态构造了两个字节码class，一个是Proxy的之类class，一个是Interfaces实现类class
+        // getProxy() 内部其实动态构造了两个字节码class，一个是Proxy的子类class，一个是Interfaces实现类class
         // 和jdk动态代理的区别，没有运行时反射开销
         // jdk的代理类是java.lang.reflect.Proxy的子类，根据java单一继承的原则，所以只支持接口代理
-        // dubbo Proxy#newInstance 出来的实例不是Proxy的之类，Proxy#newInstance这个方法本身就是动态通过修改字节码生成的
+        // dubbo Proxy#newInstance 出来的实例不是Proxy的子类，Proxy#newInstance这个方法本身就是动态通过修改字节码生成的
         return (T) Proxy.getProxy(interfaces).newInstance(new InvokerInvocationHandler(invoker));
     }
 
