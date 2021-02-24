@@ -83,6 +83,7 @@ public class DefaultFuture implements ResponseFuture {
      * check time out of the future
      */
     private static void timeoutCheck(DefaultFuture future) {
+        // 超时检查任务
         TimeoutCheckTask task = new TimeoutCheckTask(future);
         TIME_OUT_TIMER.newTimeout(task, future.getTimeout(), TimeUnit.MILLISECONDS);
     }
@@ -237,20 +238,21 @@ public class DefaultFuture implements ResponseFuture {
 
         @Override
         public void run(Timeout timeout) {
-            if (future == null || future.isDone()) {
+            if (future == null || future.isDone()) { // future已经返回，直接return掉
                 return;
             }
-            // create exception response.
+            // create exception response. 构造已经超时的response
             Response timeoutResponse = new Response(future.getId());
             // set timeout status.
             timeoutResponse.setStatus(future.isSent() ? Response.SERVER_TIMEOUT : Response.CLIENT_TIMEOUT);
             timeoutResponse.setErrorMessage(future.getTimeoutMessage(true));
-            // handle response.
+            // handle response. 使用这个超时的response进行future的received处理
             DefaultFuture.received(future.getChannel(), timeoutResponse);
 
         }
     }
 
+    // 回调逻辑，Response -> Result
     private void invokeCallback(ResponseCallback c) {
         ResponseCallback callbackCopy = c;
         if (callbackCopy == null) {

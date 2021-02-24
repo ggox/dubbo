@@ -111,8 +111,11 @@ final class HeaderExchangeChannel implements ExchangeChannel {
         req.setVersion(Version.getProtocolVersion());
         req.setTwoWay(true);
         req.setData(request);
+        // 创建一个DefaultFuture(ResponseFuture的默认实现)
+        // 底层核心逻辑：将请求关联的future和channel都保存到本地的map中，当收到异步的返回的响应时再从map中获取到关联的future进行处理,一般基于长连接的异步请求都是这个玩法
         DefaultFuture future = DefaultFuture.newFuture(channel, req, timeout);
         try {
+            // 通过channel发送数据
             channel.send(req);
         } catch (RemotingException e) {
             future.cancel();

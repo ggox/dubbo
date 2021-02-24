@@ -28,6 +28,7 @@ public interface ResponseFuture {
 
     /**
      * get result.
+     * 同步等待结果，同步的方式
      *
      * @return result.
      */
@@ -43,6 +44,7 @@ public interface ResponseFuture {
 
     /**
      * set callback.
+     * 接收到response后，通过设置的callback进行下面逻辑的处理，这是异步的方式，不会阻塞用户线程
      *
      * @param callback
      */

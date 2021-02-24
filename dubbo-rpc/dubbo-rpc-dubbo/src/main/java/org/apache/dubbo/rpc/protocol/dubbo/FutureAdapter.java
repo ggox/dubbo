@@ -37,7 +37,7 @@ public class FutureAdapter<V> extends CompletableFuture<V> {
     public FutureAdapter(ResponseFuture future) {
         this.future = future;
         this.resultFuture = new CompletableFuture<>();
-        future.setCallback(new ResponseCallback() {
+        future.setCallback(new ResponseCallback() { // 默认的callback，用户可以通过((FutureAdapter)RpcContext.getContext().getFuture()).getFuture().setCallback()覆盖这个callback
             @Override
             public void done(Object response) {
                 Result result = (Result) response;
@@ -48,7 +48,7 @@ public class FutureAdapter<V> extends CompletableFuture<V> {
                 } catch (Throwable t) {
                     FutureAdapter.this.completeExceptionally(t);
                 }
-                FutureAdapter.this.complete(value);
+                FutureAdapter.this.complete(value); // 调用 CompletableFuture#complete 完成future
             }
 
             @Override
